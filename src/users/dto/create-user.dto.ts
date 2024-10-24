@@ -1,4 +1,4 @@
-import { IsNumber, IsString } from "class-validator";
+import { IsNumber, IsOptional, IsString } from "class-validator";
 
 export class CreateUserDto {
 
@@ -9,12 +9,15 @@ export class CreateUserDto {
   @IsString()
   readonly kakaoId: string;
 
+  @IsOptional()
   @IsString()
   readonly profilePic: string;
 
+  @IsOptional()
   @IsString()
   readonly addr: string;
 
+  @IsOptional()
   @IsString()
   readonly addrDetail: string;
 }
