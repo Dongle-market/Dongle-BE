@@ -1,5 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { User } from './entities/user.entity';
+import { CreateUserDto } from './dto/create-user.dto';
 
 @Injectable()
 export class UsersService {
@@ -23,7 +24,7 @@ export class UsersService {
     return true;
   }
 
-  create(userData) {
+  create(userData: CreateUserDto) {
     this.users.push({
       userId: this.users.length + 1,
       ...userData
