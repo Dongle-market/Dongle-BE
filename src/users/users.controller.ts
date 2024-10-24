@@ -33,11 +33,8 @@ export class UsersController {
   }
 
   @Patch(":id")
-  patch(@Param("id") userId: string, @Body() userData) {
-    return {
-      updatedUser: userId,
-      ...userData,
-    }
+  patch(@Param("id") userId: string, @Body() updateData) {
+    return this.usersService.update(userId, updateData)
   }
 
 
