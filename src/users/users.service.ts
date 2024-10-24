@@ -1,6 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { User } from './entities/user.entity';
 import { CreateUserDto } from './dto/create-user.dto';
+import { UpdateUserDto } from './dto/update-user.dto';
 
 @Injectable()
 export class UsersService {
@@ -10,8 +11,8 @@ export class UsersService {
     return this.users;
   }
 
-  getOne(id: string): User {
-    const user = this.users.find(user => user.userId === parseInt(id));
+  getOne(id: number): User { // id가 number로 넘어오기 때문에 parseInt 필요없음
+    const user = this.users.find(user => user.userId === id);
     if (!user) {
       throw new NotFoundException(`User with ID ${id} not found.`);
     }
@@ -19,8 +20,8 @@ export class UsersService {
     return user;
   }
 
-  deleteOne(id: string): boolean {
-    this.users = this.users.filter(user => user.userId !== parseInt(id));
+  deleteOne(id: number): boolean {
+    this.users = this.users.filter(user => user.userId !== id);
     return true;
   }
 
@@ -32,7 +33,7 @@ export class UsersService {
     return userData;
   }
 
-  update(id: string, updateData) {
+  update(id: number, updateData: UpdateUserDto) {
     const user = this.getOne(id);
     this.deleteOne(id);
     this.users.push({...user, ...updateData});

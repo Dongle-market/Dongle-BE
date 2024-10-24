@@ -1,20 +1,20 @@
 import { IsNumber, IsString } from "class-validator";
 
-export class CreateUserDto {
+export class UpdateUserDto {
 
   // 각 필드에 대한 유효성 검사 가능
   @IsString()
-  readonly userName: string;
+  readonly userName?: string;
 
   @IsString()
-  readonly kakaoId: string;
+  readonly kakaoId?: string;
 
   @IsString()
-  readonly profilePic: string;
+  readonly profilePic?: string;
 
   @IsString()
-  readonly addr: string;
+  readonly addr?: string;
 
   @IsString()
-  readonly addrDetail: string;
+  readonly addrDetail?: string;
 }
