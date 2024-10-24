@@ -2,17 +2,22 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { User } from './entities/user.entity';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 
 @Injectable() // dependency injection
 export class UsersService {
-  private users: User[] = [];
+  constructor(
+    @InjectRepository(User)
+    private usersRepository: Repository<User>
+  ) {}
 
-  getAll(): User[] {
-    return this.users;
+  getAll(): Promise<User[]> {
+    return this.usersRepository.find();
   }
 
-  getOne(id: number): User { // id가 number로 넘어오기 때문에 parseInt 필요없음
-    const user = this.users.find(user => user.userId === id);
+  async getOne(id: number): Promise<User> { // id가 number로 넘어오기 때문에 parseInt 필요없음
+    const user = await this.usersRepository.findOne({ where: { userId: id } });
     if (!user) {
       throw new NotFoundException(`User with ID ${id} not found.`);
     }
@@ -20,22 +25,28 @@ export class UsersService {
     return user;
   }
 
-  deleteOne(id: number): boolean {
-    this.users = this.users.filter(user => user.userId !== id);
-    return true;
+  async deleteOne(id: number): Promise<void> {
+    const result = await this.usersRepository.delete(id);
+    if (result.affected === 0) {
+      throw new NotFoundException(`User with ID ${id} not found.`);
+    }
   }
 
-  create(userData: CreateUserDto) {
-    this.users.push({
-      userId: this.users.length + 1,
-      ...userData
-    })
-    return userData;
+  // create(userData: CreateUserDto) {
+  //   this.users.push({
+  //     userId: this.users.length + 1,
+  //     ...userData
+  //   })
+  //   return userData;
+  // }
+
+  async create(userData: CreateUserDto): Promise<User> {
+    const newUser = this.usersRepository.create(userData);
+    return await this.usersRepository.save(newUser);
   }
 
-  update(id: number, updateData: UpdateUserDto) {
-    const user = this.getOne(id);
-    this.deleteOne(id);
-    this.users.push({...user, ...updateData});
+  async update(id: number, updateData: UpdateUserDto) {
+    await this.usersRepository.update(id, updateData);
+    return this.getOne(id);
   }
 }
