@@ -10,7 +10,7 @@ export class UsersController {
   constructor(private readonly usersService: UsersService) {} // dependency injection
   
   @Get()
-  getAll(): User[] {
+  getAll(): Promise<User[]> {
     return this.usersService.getAll();
   }
 
@@ -20,22 +20,22 @@ export class UsersController {
   // }
 
   @Get(":id") // 파라미터 받아오는걸 쿼리보다 뒤에쓰자
-  getOne(@Param("id") userId: number): User { // 파라미터가 string으로 넘어와 Number로 변환해야 하는데, pipe의 transform: true가 해줌
+  getOne(@Param("id") userId: number): Promise<User> { // 파라미터가 string으로 넘어와 Number로 변환해야 하는데, pipe의 transform: true가 해줌
     return this.usersService.getOne(userId);
   }
 
   @Post()
-  create(@Body() userData: CreateUserDto) {
-    return this.usersService.create(userData);
+  async create(@Body() userData: CreateUserDto): Promise<User> {
+    return await this.usersService.create(userData);
   }
 
   @Delete(":id")
-  remove(@Param("id") userId: number) {
+  remove(@Param("id") userId: number): Promise<void> {
     return this.usersService.deleteOne(userId);
   }
 
   @Patch(":id")
-  patch(@Param("id") userId: number, @Body() updateData: UpdateUserDto) {
+  patch(@Param("id") userId: number, @Body() updateData: UpdateUserDto): Promise<User> {
     return this.usersService.update(userId, updateData)
   }
 
