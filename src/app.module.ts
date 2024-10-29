@@ -2,7 +2,6 @@ import { Module } from '@nestjs/common';
 import { UsersModule } from './users/users.module';
 import { AppController } from './app.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { User } from './users/entities/user.entity';
 import { ItemsModule } from './items/items.module';
 
 @Module({
@@ -15,7 +14,7 @@ import { ItemsModule } from './items/items.module';
       password: '',
       database: 'dongle_market',
       entities: [__dirname + '/**/*.entity{.ts,.js}'],
-      synchronize: true,
+      synchronize: false,
     }),
     UsersModule,
     ItemsModule,
