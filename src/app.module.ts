@@ -3,15 +3,17 @@ import { UsersModule } from './users/users.module';
 import { AppController } from './app.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ItemsModule } from './items/items.module';
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
   imports: [
+    ConfigModule.forRoot(),
     TypeOrmModule.forRoot({
       type: 'mysql',
-      host: 'localhost',
+      host: process.env.DB_HOST || 'localhost',
       port: 3306,
-      username: 'root',
-      password: '',
+      username: process.env.DB_USER || 'root',
+      password: process.env.DB_PASSWORD || '',
       database: 'dongle_market',
       entities: [__dirname + '/**/*.entity{.ts,.js}'],
       synchronize: false,
