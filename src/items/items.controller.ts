@@ -12,9 +12,27 @@ export class ItemsController {
     return this.itemsService.getAll();
   }
 
-  @Get("list")
-  async getList(@Query("species") species: string): Promise<Item[]> {
-    return await this.itemsService.getList(species);
+  // @Get("list")
+  // async getList(@Query("species") species: string): Promise<Item[]> {
+  //   return await this.itemsService.getList(species);
+  // }
+
+  /** 사료 조회 */
+  @Get("food")
+  async getFood(@Query("species") species?: string, @Query("sub") sub?: string): Promise<Item[]> {
+    return await this.itemsService.getList("food", species, sub);
+  }
+
+  /** 간식 조회 */
+  @Get("snack")
+  async getSnack(@Query("species") species?: string, @Query("sub") sub?: string): Promise<Item[]> {
+    return await this.itemsService.getList("snack", species, sub);
+  }
+
+  /** 용품 조회 */
+  @Get("product")
+  async getProduct(@Query("species") species?: string, @Query("sub") sub?: string): Promise<Item[]> {
+    return await this.itemsService.getList("product", species, sub);
   }
 
   @Get(":id")
