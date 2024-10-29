@@ -11,13 +11,13 @@ export class User {
   @Column({ name: 'kakao_id' })
   kakaoId: string;
 
-  @Column({ name: 'profile_pic' })
+  @Column({ name: 'profile_pic', nullable: true })
   profilePic: string;
 
-  @Column()
+  @Column({ nullable: true })
   addr: string;
 
-  @Column({ name: 'addr_detail' })
+  @Column({ name: 'addr_detail', nullable: true })
   addrDetail: string;
 
   @CreateDateColumn({ name: 'created_at' })
