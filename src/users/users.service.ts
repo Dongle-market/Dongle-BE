@@ -12,10 +12,11 @@ export class UsersService {
     private usersRepository: Repository<User>
   ) {}
 
-  getAll(): Promise<User[]> {
-    return this.usersRepository.find();
+  async getAll(): Promise<User[]> {
+    return await this.usersRepository.find();
   }
 
+  /** userId로 해당하는 회원 검색 */
   async getOne(id: number): Promise<User> { // id가 number로 넘어오기 때문에 parseInt 필요없음
     const user = await this.usersRepository.findOne({ where: { userId: id } });
     if (!user) {
@@ -25,18 +26,13 @@ export class UsersService {
     return user;
   }
 
+  /** 카카오id로 기존유저 검증 */
   async getOneByKakaoId(kakaoId: string): Promise<User | undefined> {
     const user = await this.usersRepository.findOne({ where: { kakaoId: kakaoId } });
     return user;
   }
 
-  async deleteOne(id: number): Promise<void> {
-    const result = await this.usersRepository.delete(id);
-    if (result.affected === 0) {
-      throw new NotFoundException(`User with ID ${id} not found.`);
-    }
-  }
-
+  /** 회원가입 */
   async create(userData: CreateUserDto): Promise<User> {
     const newUser = this.usersRepository.create(userData);
     return await this.usersRepository.save(newUser);
@@ -45,5 +41,12 @@ export class UsersService {
   async update(id: number, updateData: UpdateUserDto) {
     await this.usersRepository.update(id, updateData);
     return this.getOne(id);
+  }
+
+  async deleteOne(id: number): Promise<void> {
+    const result = await this.usersRepository.delete(id);
+    if (result.affected === 0) {
+      throw new NotFoundException(`User with ID ${id} not found.`);
+    }
   }
 }

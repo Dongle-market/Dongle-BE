@@ -22,6 +22,7 @@ export class ItemsService {
   //   return result;
   // }
 
+  /** 상품 리스트 조회 : 대분류 + 종/소분류 필터링 */
   async getList(main: string, species?: string, sub?: string): Promise<Item[]> {
     const query = this.itemsRepository.createQueryBuilder('item')
       .innerJoinAndSelect('item.category', 'category')
@@ -38,7 +39,8 @@ export class ItemsService {
     return result;
   }
 
-  getOne(itemId: number): Promise<Item> {
-    return this.itemsRepository.findOne({ where: { itemId }, relations: ['category'] });
+  /** 상품 하나 조회 + 카테고리 */
+  async getOne(itemId: number): Promise<Item> {
+    return await this.itemsRepository.findOne({ where: { itemId }, relations: ['category'] });
   }
 }

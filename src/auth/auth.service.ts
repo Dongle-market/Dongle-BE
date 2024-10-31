@@ -2,14 +2,17 @@ import { Injectable } from '@nestjs/common';
 import { HttpService } from '@nestjs/axios';
 import { firstValueFrom } from 'rxjs';
 import { JwtService } from '@nestjs/jwt';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class AuthService {
   constructor(
     private readonly httpService: HttpService,
     private readonly jwtService: JwtService,
+    private readonly config: ConfigService,
   ) {}
 
+  /** 인가코드로 카카오 토큰 발급 */
   async getKakaoToken(code: string): Promise<string> {
     try {
       const tokenResponse = await firstValueFrom(
@@ -18,8 +21,8 @@ export class AuthService {
           {
             params: {
               grant_type: "authorization_code",
-              client_id: process.env.KAKAO_CLIENT_ID,
-              redirect_uri: process.env.KAKAO_REDIRECT_URI,
+              client_id: this.config.get<string>('KAKAO_CLIENT_ID'),
+              redirect_uri: this.config.get<string>('KAKAO_REDIRECT_URI'),
               code: code,
             },
             headers: {
@@ -34,6 +37,7 @@ export class AuthService {
     }
   }
 
+  /** 카카오 토큰으로 카카오 정보 취득 */
   async getKakaoUserInfo(token: string): Promise<any> {
     try {
       const userInfoResponse = await firstValueFrom(
@@ -52,6 +56,7 @@ export class AuthService {
     }
   }
 
+  /** JWT 토큰 발급 */
   async generateJwt(user: any): Promise<string> {
     const payload = {
       userId: user.userId,
