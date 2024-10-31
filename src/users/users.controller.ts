@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post, Put, Query } from '@nestjs/common';
+import { Body, Controller, Delete, Get, NotFoundException, Param, Patch, Post, Put, Query, Req } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { User } from './entities/user.entity';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -14,10 +14,15 @@ export class UsersController {
     return this.usersService.getAll();
   }
 
-  // @Get('search')
-  // search(@Query("year") searchingYear: string) {
-  //   return `This will search for a user: after ${searchingYear}`;
-  // }
+  @Get('my')
+  async getMyProfile(@Req() req: Request): Promise<User> {
+    const userId = req['userId'];
+    const user = await this.usersService.getOne(userId);
+    if (!user) {
+      throw new NotFoundException(`해당 유저를 찾을 수 없습니다.`);
+    }
+    return user;
+  }
 
   @Get(":id") // 파라미터 받아오는걸 쿼리보다 뒤에쓰자
   getOne(@Param("id") userId: number): Promise<User> { // 파라미터가 string으로 넘어와 Number로 변환해야 하는데, pipe의 transform: true가 해줌
