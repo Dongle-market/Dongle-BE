@@ -11,15 +11,16 @@ export class AuthController {
     private readonly usersService: UsersService,
   ) {}
 
-  @Get()
-  async kakaoAuth(@Query("code") code: string, @Res() res: Response) {
-    const token = await this.authService.getKakaoToken(code);
-    const user = await this.authService.getKakaoUserInfo(token);
+  // @Get()
+  // async kakaoAuth(@Query("code") code: string, @Res() res: Response) {
+  //   const token = await this.authService.getKakaoToken(code);
+  //   const user = await this.authService.getKakaoUserInfo(token);
     
-    const redirectUrl = `http://localhost:3001/auth?token=${token}&user=${JSON.stringify(user)}`;
-    res.redirect(redirectUrl)
-  }
+  //   const redirectUrl = `http://localhost:3001/auth?token=${token}&user=${JSON.stringify(user)}`;
+  //   res.redirect(redirectUrl)
+  // }
 
+  /** 카카오 로그인 및 회원가입 */
   @Public()
   @Post("login")
   async login(@Body() code: any) {

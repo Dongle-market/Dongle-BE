@@ -12,6 +12,7 @@ export class AuthService {
     private readonly config: ConfigService,
   ) {}
 
+  /** 인가코드로 카카오 토큰 발급 */
   async getKakaoToken(code: string): Promise<string> {
     try {
       const tokenResponse = await firstValueFrom(
@@ -36,6 +37,7 @@ export class AuthService {
     }
   }
 
+  /** 카카오 토큰으로 카카오 정보 취득 */
   async getKakaoUserInfo(token: string): Promise<any> {
     try {
       const userInfoResponse = await firstValueFrom(
@@ -54,6 +56,7 @@ export class AuthService {
     }
   }
 
+  /** JWT 토큰 발급 */
   async generateJwt(user: any): Promise<string> {
     const payload = {
       userId: user.userId,

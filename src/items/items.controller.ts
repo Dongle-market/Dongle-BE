@@ -35,8 +35,9 @@ export class ItemsController {
     return await this.itemsService.getList("product", species, sub);
   }
 
+  /** id로 단일 상품 조회 */
   @Get(":id")
-  getOne(@Param("id") itemId: number): Promise<Item> {
+  async getOne(@Param("id") itemId: number): Promise<Item> {
     return this.itemsService.getOne(itemId);
   }
 

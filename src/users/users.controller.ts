@@ -9,11 +9,13 @@ export class UsersController {
 
   constructor(private readonly usersService: UsersService) {} // dependency injection
   
+  /** 전체 회원 리스트 */
   @Get()
-  getAll(): Promise<User[]> {
+  async getAll(): Promise<User[]> {
     return this.usersService.getAll();
   }
 
+  /** 회원 정보 */
   @Get('my')
   async getMyProfile(@Req() req: Request): Promise<User> {
     const userId = req['userId'];
