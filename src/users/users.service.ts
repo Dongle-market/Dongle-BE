@@ -25,20 +25,17 @@ export class UsersService {
     return user;
   }
 
+  async getOneByKakaoId(kakaoId: string): Promise<User | undefined> {
+    const user = await this.usersRepository.findOne({ where: { kakaoId: kakaoId } });
+    return user;
+  }
+
   async deleteOne(id: number): Promise<void> {
     const result = await this.usersRepository.delete(id);
     if (result.affected === 0) {
       throw new NotFoundException(`User with ID ${id} not found.`);
     }
   }
-
-  // create(userData: CreateUserDto) {
-  //   this.users.push({
-  //     userId: this.users.length + 1,
-  //     ...userData
-  //   })
-  //   return userData;
-  // }
 
   async create(userData: CreateUserDto): Promise<User> {
     const newUser = this.usersRepository.create(userData);
