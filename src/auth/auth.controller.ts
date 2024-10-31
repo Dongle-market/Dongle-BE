@@ -20,15 +20,27 @@ export class AuthController {
   }
 
   @Post("login")
-  async login(@Body() authCode: string) {
-    const token = await this.authService.getKakaoToken(authCode);
+  async login(@Body() code: any) {
+    const token = await this.authService.getKakaoToken(code.authCode);
     const user = await this.authService.getKakaoUserInfo(token);
-    
-    const existingUser = await this.usersService.getOneByKakaoId(user.id.toString());
 
+    const existingUser = await this.usersService.getOneByKakaoId(user.id); // 신규유저면 undefined
+    let jwtToken: string;
+    let userData: any;
     
     if (existingUser) {
-
+      jwtToken = await this.authService.generateJwt(existingUser);
+      userData = existingUser;
+    } else {
+      const newUser = await this.usersService.create({
+        kakaoId: user.id.toString(),
+        userName: user.properties.nickname,
+        profilePic: user.properties.profile_image,
+      });
+      jwtToken = await this.authService.generateJwt(newUser);
+      userData = newUser;
     }
+
+    return { token: jwtToken, user: userData };
   }
 }

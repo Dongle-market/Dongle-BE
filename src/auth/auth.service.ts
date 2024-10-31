@@ -1,10 +1,14 @@
 import { Injectable } from '@nestjs/common';
 import { HttpService } from '@nestjs/axios';
 import { firstValueFrom } from 'rxjs';
+import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
 export class AuthService {
-  constructor(private readonly httpService: HttpService) {}
+  constructor(
+    private readonly httpService: HttpService,
+    private readonly jwtService: JwtService,
+  ) {}
 
   async getKakaoToken(code: string): Promise<string> {
     try {
@@ -26,7 +30,7 @@ export class AuthService {
       );
       return tokenResponse.data.access_token;
     } catch (error) {
-      return "카카오 토큰 발급 실패!"
+      console.error(error);
     }
   }
 
@@ -44,8 +48,15 @@ export class AuthService {
       );
       return userInfoResponse.data;
     } catch (error) {
-      return "카카오 유저 정보 조회 실패!"
+      console.log("kakao error");
     }
+  }
 
+  async generateJwt(user: any): Promise<string> {
+    const payload = {
+      userId: user.userId,
+      kakaoId: user.kakaoId,
+    }
+    return this.jwtService.sign(payload);
   }
 }

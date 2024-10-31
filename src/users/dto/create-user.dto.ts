@@ -14,12 +14,4 @@ export class CreateUserDto {
   @IsOptional()
   @IsString()
   readonly profilePic: string;
-
-  @IsOptional()
-  @IsString()
-  readonly addr: string;
-
-  @IsOptional()
-  @IsString()
-  readonly addrDetail: string;
 }

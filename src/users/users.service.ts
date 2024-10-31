@@ -26,7 +26,7 @@ export class UsersService {
   }
 
   async getOneByKakaoId(kakaoId: string): Promise<User | undefined> {
-    const user = await this.usersRepository.findOne({ where: { kakaoId } });
+    const user = await this.usersRepository.findOne({ where: { kakaoId: kakaoId } });
     return user;
   }
 
