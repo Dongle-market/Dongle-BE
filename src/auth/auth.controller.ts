@@ -2,6 +2,7 @@ import { Body, Controller, Get, Post, Query, Res } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { Response } from 'express';
 import { UsersService } from 'src/users/users.service';
+import { Public } from './public.decorator';
 
 @Controller('apis/auth')
 export class AuthController {
@@ -19,6 +20,7 @@ export class AuthController {
     res.redirect(redirectUrl)
   }
 
+  @Public()
   @Post("login")
   async login(@Body() code: any) {
     const token = await this.authService.getKakaoToken(code.authCode);
