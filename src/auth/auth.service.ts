@@ -2,12 +2,14 @@ import { Injectable } from '@nestjs/common';
 import { HttpService } from '@nestjs/axios';
 import { firstValueFrom } from 'rxjs';
 import { JwtService } from '@nestjs/jwt';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class AuthService {
   constructor(
     private readonly httpService: HttpService,
     private readonly jwtService: JwtService,
+    private readonly config: ConfigService,
   ) {}
 
   async getKakaoToken(code: string): Promise<string> {
@@ -18,8 +20,8 @@ export class AuthService {
           {
             params: {
               grant_type: "authorization_code",
-              client_id: process.env.KAKAO_CLIENT_ID,
-              redirect_uri: process.env.KAKAO_REDIRECT_URI,
+              client_id: this.config.get<string>('KAKAO_CLIENT_ID'),
+              redirect_uri: this.config.get<string>('KAKAO_REDIRECT_URI'),
               code: code,
             },
             headers: {
