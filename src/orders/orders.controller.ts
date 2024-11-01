@@ -1,7 +1,9 @@
 import { Request } from 'express';
 import { OrdersService } from './orders.service';
-import { Controller, Get, Param, Req } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Req } from '@nestjs/common';
 import { Order } from './entities/order.entity';
+import { CreateOrderDto } from './dtos/create-order.dto';
+import { type } from 'os';
 
 @Controller('apis/order')
 export class OrdersController {
@@ -20,5 +22,11 @@ export class OrdersController {
   @Get(':id')
   async getOne(@Param('id') orderId: number): Promise<Order> {
     return await this.ordersService.getOne(orderId);
+  }
+
+  @Post()
+  async createOrder(@Body() createData: CreateOrderDto, @Req() req: Request): Promise<Order> {
+    const userId = req['userId'];
+    return await this.ordersService.createOrder(userId, createData);
   }
 }
