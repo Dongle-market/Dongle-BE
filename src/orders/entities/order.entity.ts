@@ -1,14 +1,18 @@
 import { User } from "src/users/entities/user.entity";
-import { Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { OrderItem } from "./order-item.entity";
 
 @Entity({ name: 'order' })
 export class Order {
   @PrimaryGeneratedColumn({ name: 'order_id' })
   orderId: number;
 
-  @ManyToOne(() => User, user => user.userId, { onDelete: 'CASCADE' })
-  @Column({ name: 'user_id' })
-  userId: number;
+  @OneToMany(() => OrderItem, orderItem => orderItem.order, { cascade: true })
+  orderItems: OrderItem[];
+
+  @ManyToOne(() => User, { onDelete: 'CASCADE' })
+  @JoinColumn({ name: 'user_id' })
+  user: User;
 
   @CreateDateColumn({ name: 'order_date' })
   orderDate: Date;
@@ -25,7 +29,7 @@ export class Order {
   @Column()
   addr: string;
 
-  @Column({ name: 'addr_detail'})
+  @Column({ name: 'addr_detail' })
   addrDetail: string;
 
   @Column({ name: 'phone_number' })

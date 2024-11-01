@@ -20,6 +20,9 @@ export class User {
   @Column({ name: 'addr_detail', nullable: true })
   addrDetail: string;
 
+  @Column({ name: 'phone_number', nullable: true })
+  phoneNumber: string;
+
   @CreateDateColumn({ name: 'created_at' })
   createdAt: Date;
 
