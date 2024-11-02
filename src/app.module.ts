@@ -8,6 +8,7 @@ import { AuthController } from './auth/auth.controller';
 import { AuthService } from './auth/auth.service';
 import { AuthModule } from './auth/auth.module';
 import { HttpModule } from '@nestjs/axios';
+import { AnimalModule } from './animal/animal.module';
 
 @Module({
   imports: [
@@ -29,6 +30,7 @@ import { HttpModule } from '@nestjs/axios';
     UsersModule,
     ItemsModule,
     AuthModule,
+    AnimalModule,
   ],
   controllers: [AppController],
   // 컨트롤러 : express의 라우터와 같은 역할, url을 가져오고 함수를 실행
