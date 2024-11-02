@@ -20,10 +20,10 @@ export class Item {
   image: string;
 
   @Column()
-  lprice: string;
+  lprice: number;
 
   @Column({ nullable: true })
-  hprice: string;
+  hprice: number;
 
   @Column({ name: 'mall_name', nullable: true })
   mallName: string;
