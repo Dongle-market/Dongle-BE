@@ -15,7 +15,7 @@ export class Order {
   user: User;
 
   @RelationId((order: Order) => order.user)
-  @Column({ name: 'user_id' })
+  @Column({ name: 'user_id' }) 
   userId: number;
 
   @CreateDateColumn({ name: 'order_date' })
