@@ -1,46 +1,36 @@
 // pet.controller.ts
 
-import { Body, Controller, Delete, Get, NotFoundException, Param, Patch, Post, Req } from '@nestjs/common';
+import { Body, Controller, Delete, Get, NotFoundException, Param, Patch, Post } from '@nestjs/common';
 import { PetService } from './pet.service';
 import { Pet } from './entities/pet.entity';
 import { CreatePetDto } from './dto/create-pet.dto';
 import { UpdatePetDto } from './dto/update-pet.dto';
 
-@Controller('apis/pet')
+@Controller('apis/:userId/pet')
 export class PetController {
-  constructor(private readonly petService: PetService) {} // dependency injection
+  constructor(private readonly petService: PetService) {}
 
-  /** 전체 반려동물 리스트 */
+  /** 특정 유저의 반려동물 리스트 */
   @Get('mydongle')
-  async getAll(): Promise<Pet[]> {
-    return this.petService.getAll();
+  async getAll(@Param('userId') userId: number): Promise<Pet[]> {
+    return this.petService.getAllByUserId(userId);
   }
 
-  /** 특정 반려동물 정보 */
+  /** 특정 유저의 특정 반려동물 정보 */
   @Get(':id')
-  async getOne(@Param('id') petId: number): Promise<Pet> {
-    const pet = await this.petService.getOne(petId);
-    if (!pet) {
-      throw new NotFoundException(`해당 반려동물을 찾을 수 없습니다.`);
-    }
-    return pet;
+  async getOne(@Param('userId') userId: number, @Param('id') petId: number): Promise<Pet> {
+    return this.petService.getOneByUserId(userId, petId);
   }
 
-  /** 반려동물 등록 */
+  /** 특정 유저의 반려동물 등록 */
   @Post()
-  async create(@Body() petData: CreatePetDto): Promise<Pet> {
-    return await this.petService.create(petData);
+  async create(@Param('userId') userId: number, @Body() petData: CreatePetDto): Promise<Pet> {
+    return await this.petService.create(userId, petData);
   }
 
-  /** 반려동물 삭제 */
+  /** 특정 유저의 반려동물 삭제 */
   @Delete(':id')
-  async remove(@Param('id') petId: number): Promise<void> {
-    return this.petService.deleteOne(petId);
-  }
-
-  /** 반려동물 정보 업데이트 */
-  @Patch(':id')
-  async patch(@Param('id') petId: number, @Body() updateData: UpdatePetDto): Promise<Pet> {
-    return this.petService.update(petId, updateData);
+  async remove(@Param('userId') userId: number, @Param('id') petId: number): Promise<void> {
+    return this.petService.deleteOneByUserId(userId, petId);
   }
 }
