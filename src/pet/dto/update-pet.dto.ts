@@ -1,19 +1,23 @@
 // update-pet.dto.ts
 
-import { IsBoolean, IsInt, IsOptional, IsString, Max, Min } from 'class-validator';
+import { IsInt, IsOptional, IsString, Max, Min } from 'class-validator';
 
 export class UpdatePetDto {
   @IsString()
-  @IsOptional() // optional 필드
+  @IsOptional()
   petName?: string;
+
+//   @IsInt()
+//   @IsOptional()
+//   profileImg?: number;
 
   @IsString()
   @IsOptional()
   type?: string;
 
-  @IsBoolean()
+  @IsString()
   @IsOptional()
-  gender?: boolean;
+  gender?: string;
 
   @IsInt()
   @Min(0)

@@ -8,15 +8,15 @@ export class Pet {
   @Column({ name: 'pet_name' })
   petName: string;
 
-//   @Column({ name: 'profile_img', nullable: true })
-//   profileImg: number;
+  // @Column({ name: 'profile_img' })
+  // profileImg: number;
 
-  @Column({ name: 'type', nullable: true })
+  @Column({ name: 'type' })
   type: string;
 
-  @CreateDateColumn({ name: 'gender' })
-  gender: boolean;
+  @Column({ name: 'gender' })
+  gender: string;
 
-  @UpdateDateColumn({ name: 'age' })
+  @Column({ name: 'age' })
   age: number;
 }
