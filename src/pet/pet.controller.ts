@@ -11,7 +11,7 @@ export class PetController {
   constructor(private readonly petService: PetService) {} // dependency injection
 
   /** 전체 반려동물 리스트 */
-  @Get()
+  @Get('mydongle')
   async getAll(): Promise<Pet[]> {
     return this.petService.getAll();
   }
