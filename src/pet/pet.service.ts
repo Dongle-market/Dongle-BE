@@ -14,37 +14,33 @@ export class PetService {
     private petsRepository: Repository<Pet>,
   ) {}
 
-  /** 전체 반려동물 리스트 조회 */
-  async getAll(): Promise<Pet[]> {
-    return await this.petsRepository.find();
+  /** 특정 유저의 반려동물 리스트 조회 */
+  async getAllByUserId(userId: number): Promise<Pet[]> {
+    return await this.petsRepository.find({ where: { user: { userId } } });
   }
 
-  /** 특정 반려동물 정보 조회 */
-  async getOne(id: number): Promise<Pet> {
-    const pet = await this.petsRepository.findOne({ where: { petId: id } });
+  /** 특정 유저의 특정 반려동물 조회 */
+  async getOneByUserId(userId: number, petId: number): Promise<Pet> {
+    const pet = await this.petsRepository.findOne({
+      where: { petId, user: { userId } },
+    });
     if (!pet) {
-      throw new NotFoundException(`Pet with ID ${id} not found.`);
+      throw new NotFoundException(`Pet with ID ${petId} for User ${userId} not found.`);
     }
     return pet;
   }
 
-  /** 반려동물 등록 */
-  async create(petData: CreatePetDto): Promise<Pet> {
-    const newPet = this.petsRepository.create(petData);
+  /** 특정 유저의 반려동물 등록 */
+  async create(userId: number, petData: CreatePetDto): Promise<Pet> {
+    const newPet = this.petsRepository.create({ ...petData, user: { userId } });
     return await this.petsRepository.save(newPet);
   }
 
-  /** 반려동물 정보 업데이트 */
-  async update(id: number, updateData: UpdatePetDto): Promise<Pet> {
-    await this.petsRepository.update(id, updateData);
-    return this.getOne(id);
-  }
-
-  /** 반려동물 삭제 */
-  async deleteOne(id: number): Promise<void> {
-    const result = await this.petsRepository.delete(id);
+  /** 특정 유저의 반려동물 삭제 */
+  async deleteOneByUserId(userId: number, petId: number): Promise<void> {
+    const result = await this.petsRepository.delete({ petId, user: { userId } });
     if (result.affected === 0) {
-      throw new NotFoundException(`Pet with ID ${id} not found.`);
+      throw new NotFoundException(`Pet with ID ${petId} for User ${userId} not found.`);
     }
   }
 }
