@@ -16,13 +16,13 @@ export class PetService {
 
   /** 특정 유저의 반려동물 리스트 조회 */
   async getAllByUserId(userId: number): Promise<Pet[]> {
-    return await this.petsRepository.find({ where: { user: { userId } } });
+    return await this.petsRepository.find({ where: { userId: userId }, relations: [ 'orders' ] });
   }
 
   /** 특정 유저의 특정 반려동물 조회 */
   async getOneByUserId(userId: number, petId: number): Promise<Pet> {
     const pet = await this.petsRepository.findOne({
-      where: { petId, user: { userId } },
+      where: { petId }, relations: [ 'orders' ],
     });
     if (!pet) {
       throw new NotFoundException(`Pet with ID ${petId} for User ${userId} not found.`);

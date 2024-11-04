@@ -5,6 +5,7 @@ import { PetService } from './pet.service';
 import { Pet } from './entities/pet.entity';
 import { CreatePetDto } from './dto/create-pet.dto';
 import { UpdatePetDto } from './dto/update-pet.dto';
+import { Public } from 'src/auth/public.decorator';
 
 @Controller('apis/pet')
 export class PetController {
