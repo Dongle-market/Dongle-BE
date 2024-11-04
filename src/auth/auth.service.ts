@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { HttpService } from '@nestjs/axios';
 import { firstValueFrom } from 'rxjs';
 import { JwtService } from '@nestjs/jwt';
@@ -11,6 +11,8 @@ export class AuthService {
     private readonly jwtService: JwtService,
     private readonly config: ConfigService,
   ) {}
+
+  private readonly logger = new Logger(AuthService.name);
 
   /** 인가코드로 카카오 토큰 발급 */
   async getKakaoToken(code: string): Promise<string> {
@@ -31,9 +33,10 @@ export class AuthService {
           }
         )
       );
+      this.logger.log(`카카오 토큰 발급 완료`);
       return tokenResponse.data.access_token;
     } catch (error) {
-      console.error(error);
+      this.logger.error(`카카오 토큰 발급 실패`);
     }
   }
 
@@ -50,9 +53,10 @@ export class AuthService {
           },
         )
       );
+      this.logger.log(`카카오 유저정보 취득 완료`);
       return userInfoResponse.data;
     } catch (error) {
-      console.log("kakao error");
+      this.logger.error(`카카오 유저정보 취득 실패`);
     }
   }
 

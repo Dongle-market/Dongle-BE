@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, Query, Res } from '@nestjs/common';
+import { Body, Controller, Get, Logger, Post, Query, Res } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { Response } from 'express';
 import { UsersService } from 'src/users/users.service';
@@ -10,6 +10,8 @@ export class AuthController {
     private readonly authService: AuthService,
     private readonly usersService: UsersService,
   ) {}
+
+  private readonly logger = new Logger(AuthController.name);
 
   // @Get()
   // async kakaoAuth(@Query("code") code: string, @Res() res: Response) {
@@ -27,6 +29,8 @@ export class AuthController {
     const token = await this.authService.getKakaoToken(code.authCode);
     const user = await this.authService.getKakaoUserInfo(token);
 
+    this.logger.log(`카카오 로그인 요청완료`);
+
     const existingUser = await this.usersService.getOneByKakaoId(user.id); // 신규유저면 undefined
     let jwtToken: string;
     let userData: any;
@@ -34,6 +38,7 @@ export class AuthController {
     if (existingUser) {
       jwtToken = await this.authService.generateJwt(existingUser);
       userData = existingUser;
+      this.logger.log(`userId ${userData.userId}번 로그인`);
     } else {
       const newUser = await this.usersService.create({
         kakaoId: user.id.toString(),
@@ -42,6 +47,7 @@ export class AuthController {
       });
       jwtToken = await this.authService.generateJwt(newUser);
       userData = newUser;
+      this.logger.log(`userId ${userData.userId}번 회원가입`);
     }
 
     return { token: jwtToken, user: userData };

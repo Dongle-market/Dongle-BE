@@ -1,6 +1,6 @@
 import { Request } from 'express';
 import { OrdersService } from './orders.service';
-import { Body, Controller, Get, Param, Patch, Post, Req } from '@nestjs/common';
+import { Body, Controller, Get, Logger, Param, Patch, Post, Req } from '@nestjs/common';
 import { Order } from './entities/order.entity';
 import { CreateOrderDto } from './dtos/create-order.dto';
 import { type } from 'os';
@@ -11,10 +11,13 @@ export class OrdersController {
     private readonly ordersService: OrdersService 
   ) {}
 
+  private readonly logger = new Logger(OrdersController.name);
+
   /** 내 주문내역 */
   @Get('my')
   async getByUserId(@Req() req: Request): Promise<Order[]> {
     const userId = req['userId'];
+    this.logger.log(`userId ${userId}번 주문내역 조회`);
     return await this.ordersService.getByUserId(userId);
   }
 
@@ -27,11 +30,14 @@ export class OrdersController {
   @Post()
   async createOrder(@Body() createData: CreateOrderDto, @Req() req: Request): Promise<Order> {
     const userId = req['userId'];
+    this.logger.log(`userId ${userId}번 주문생성`);
     return await this.ordersService.createOrder(userId, createData);
   }
 
   @Patch(':id')
-  async updateOrderStatus(@Param('id') orderId: number): Promise<Order> {
+  async updateOrderStatus(@Param('id') orderId: number, @Req() req: Request): Promise<Order> {
+    const userId = req['userId'];
+    this.logger.log(`userId ${userId}번 ${orderId}번 주문 결제 성공`);
     return await this.ordersService.updateOrderStatus(orderId);
   }
 }
