@@ -17,7 +17,7 @@ export class OrdersService {
 
   /** 내 주문내역 최신순 조회 */
   async getByUserId(userId: number): Promise<Order[]> {
-    return await this.ordersRepository.find({ order: { orderDate: 'DESC' } });
+    return await this.ordersRepository.find({ where: { userId: userId }, order: { orderDate: 'DESC' } });
   }
 
   /** 단일 주문 조회 */
