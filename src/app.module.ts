@@ -8,6 +8,7 @@ import { AuthController } from './auth/auth.controller';
 import { AuthService } from './auth/auth.service';
 import { AuthModule } from './auth/auth.module';
 import { HttpModule } from '@nestjs/axios';
+import { PetModule } from './pet/pet.module';
 import { OrdersController } from './orders/orders.controller';
 import { OrdersService } from './orders/orders.service';
 import { OrdersModule } from './orders/orders.module';
@@ -32,6 +33,7 @@ import { OrdersModule } from './orders/orders.module';
     UsersModule,
     ItemsModule,
     AuthModule,
+    PetModule,
     OrdersModule,
   ],
   controllers: [AppController],
