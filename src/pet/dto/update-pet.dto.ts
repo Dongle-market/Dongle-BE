@@ -7,9 +7,9 @@ export class UpdatePetDto {
   @IsOptional()
   petName?: string;
 
-//   @IsInt()
-//   @IsOptional()
-//   profileImg?: number;
+  @IsInt()
+  @IsOptional()
+  profileImg?: number;
 
   @IsString()
   @IsOptional()

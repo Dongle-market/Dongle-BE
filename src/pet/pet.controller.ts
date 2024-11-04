@@ -1,6 +1,6 @@
 // pet.controller.ts
 
-import { Body, Controller, Delete, Get, Headers, Param, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Headers, Param, Post, Req } from '@nestjs/common';
 import { PetService } from './pet.service';
 import { Pet } from './entities/pet.entity';
 import { CreatePetDto } from './dto/create-pet.dto';
@@ -12,25 +12,29 @@ export class PetController {
 
   /** 특정 유저의 반려동물 리스트 */
   @Get('mydongle')
-  async getAll(@Headers('userId') userId: number): Promise<Pet[]> {
+  async getAll(@Req() req: Request): Promise<Pet[]> {
+    const userId = req['userId'];
     return this.petService.getAllByUserId(userId);
   }
 
   /** 특정 유저의 특정 반려동물 정보 */
   @Get(':id')
-  async getOne(@Headers('userId') userId: number, @Param('id') petId: number): Promise<Pet> {
+  async getOne(@Req() req: Request, @Param('id') petId: number): Promise<Pet> {
+    const userId = req['userId'];
     return this.petService.getOneByUserId(userId, petId);
   }
 
   /** 특정 유저의 반려동물 등록 */
   @Post()
-  async create(@Headers('userId') userId: number, @Body() petData: CreatePetDto): Promise<Pet> {
+  async create(@Req() req: Request, @Body() petData: CreatePetDto): Promise<Pet> {
+    const userId = req['userId'];
     return await this.petService.create(userId, petData);
   }
 
   /** 특정 유저의 반려동물 삭제 */
   @Delete(':id')
-  async remove(@Headers('userId') userId: number, @Param('id') petId: number): Promise<void> {
+  async remove(@Req() req: Request, @Param('id') petId: number): Promise<void> {
+    const userId = req['userId'];
     return this.petService.deleteOneByUserId(userId, petId);
   }
 }

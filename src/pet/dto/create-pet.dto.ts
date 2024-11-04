@@ -6,9 +6,9 @@ export class CreatePetDto {
   @IsString()
   petName: string;
 
-//   @IsInt()
-//   @IsOptional()
-//   profileImg: number;
+  @IsInt()
+  @IsOptional()
+  profileImg: number;
 
   @IsString()
   @IsOptional()
