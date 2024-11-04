@@ -11,8 +11,8 @@ export class Pet {
   @Column({ name: 'pet_name' })
   petName: string;
 
-  // @Column({ name: 'profile_img', nullable: true })
-  // profileImg: number;
+  @Column({ name: 'profile_img', nullable: true })
+  profileImg: number;
 
   @Column({ name: 'type', nullable: true })
   type: string;
