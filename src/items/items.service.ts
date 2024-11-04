@@ -23,7 +23,7 @@ export class ItemsService {
   // }
 
   /** 상품 리스트 조회 : 대분류 + 종/소분류 필터링 */
-  async getList(main: string, species?: string, sub?: string): Promise<Item[]> {
+  async getList(main: string, species?: string, sub?: string, order?: string): Promise<Item[]> {
     const query = this.itemsRepository.createQueryBuilder('item')
       .innerJoinAndSelect('item.category', 'category')
       .where('category.mainCategory = :mainCategory', { mainCategory: main })
@@ -33,6 +33,11 @@ export class ItemsService {
     }
     if (sub) {
       query.andWhere('category.subCategory = :sub', { sub });
+    }
+    if (order === 'low') {
+      query.orderBy('lprice', 'ASC');
+    } else if (order === 'high') {
+      query.orderBy('lprice', 'DESC');
     }
 
     const result = await query.getMany();
