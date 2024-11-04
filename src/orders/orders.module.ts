@@ -4,9 +4,10 @@ import { Order } from './entities/order.entity';
 import { OrderItem } from './entities/order-item.entity';
 import { OrdersController } from './orders.controller';
 import { OrdersService } from './orders.service';
+import { Pet } from 'src/pet/entities/pet.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Order, OrderItem])],
+  imports: [TypeOrmModule.forFeature([Order, OrderItem, Pet])],
   controllers: [OrdersController],
   providers: [OrdersService],
 })

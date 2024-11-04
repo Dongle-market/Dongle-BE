@@ -5,6 +5,8 @@ import { Order } from './entities/order.entity';
 import { In, Repository } from 'typeorm';
 import { OrderItem } from './entities/order-item.entity';
 import { Item } from 'src/items/entities/item.entity';
+import { Pet } from 'src/pet/entities/pet.entity';
+import { CreateOrderPetDto } from './dtos/create-order-pet.dto';
 
 @Injectable()
 export class OrdersService {
@@ -13,6 +15,8 @@ export class OrdersService {
     private ordersRepository: Repository<Order>,
     @InjectRepository(OrderItem)
     private orderItemsRepository: Repository<OrderItem>,
+    @InjectRepository(Pet)
+    private petsRepository: Repository<Pet>,
   ) {}
 
   /** 내 주문내역 최신순 조회 */
@@ -70,6 +74,23 @@ export class OrdersService {
   async updateOrderStatus(orderId: number): Promise<Order> {
     const order = await this.ordersRepository.findOne({ where: { orderId: orderId } });
     order.status = '결제완료';
+    return await this.ordersRepository.save(order);
+  }
+
+  /** 주문 - 펫 추가 */
+  async addPetToOrder(createData: CreateOrderPetDto): Promise<Order> {
+    const { orderId, petId } = createData;
+
+    const order = await this.ordersRepository.findOne({ where: { orderId }, relations: ['pets'] });
+    if (!order) {
+      throw new Error(`Order with ID ${orderId} not found`);
+    }
+    const pet = await this.petsRepository.findOne({ where: { petId } });
+    if (!pet) {
+      throw new Error(`Pet with ID ${petId} not found`);
+    }
+
+    order.pets.push(pet);
     return await this.ordersRepository.save(order);
   }
 

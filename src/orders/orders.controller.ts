@@ -4,6 +4,8 @@ import { Body, Controller, Get, Logger, Param, Patch, Post, Req } from '@nestjs/
 import { Order } from './entities/order.entity';
 import { CreateOrderDto } from './dtos/create-order.dto';
 import { type } from 'os';
+import { CreateOrderPetDto } from './dtos/create-order-pet.dto';
+import { Public } from 'src/auth/public.decorator';
 
 @Controller('apis/order')
 export class OrdersController {
@@ -40,4 +42,13 @@ export class OrdersController {
     this.logger.log(`userId ${userId}번 ${orderId}번 주문 결제 성공`);
     return await this.ordersService.updateOrderStatus(orderId);
   }
+
+  @Post('pet')
+  async addPetToOrder(@Body() createData: CreateOrderPetDto, @Req() req: Request): Promise<Order> {
+    const userId = req['userId'];
+    this.logger.log(`${userId}번 유저가 ${createData.orderId}번 주문에 ${createData.petId}번 펫 추가`);
+    return await this.ordersService.addPetToOrder(createData);
+  }
+
+  
 }

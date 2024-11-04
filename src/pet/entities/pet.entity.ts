@@ -1,7 +1,8 @@
 // pet.entity.ts
 
-import { Column, Entity, PrimaryGeneratedColumn, ManyToOne, JoinColumn } from "typeorm";
+import { Column, Entity, PrimaryGeneratedColumn, ManyToOne, JoinColumn, ManyToMany } from "typeorm";
 import { User } from "../../users/entities/user.entity";
+import { Order } from "src/orders/entities/order.entity";
 
 @Entity({ name: 'pet' })
 export class Pet {
@@ -26,4 +27,7 @@ export class Pet {
   @ManyToOne(() => User, user => user.pets)
   @JoinColumn({ name: 'user_id' }) // 외래 키 컬럼 이름을 명시적으로 지정
   user: User;
+
+  @ManyToMany(() => Order, order => order.pets)
+  orders: Order[];
 }
