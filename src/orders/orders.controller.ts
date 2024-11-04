@@ -1,6 +1,6 @@
 import { Request } from 'express';
 import { OrdersService } from './orders.service';
-import { Body, Controller, Get, Param, Post, Req } from '@nestjs/common';
+import { Body, Controller, Get, Param, Patch, Post, Req } from '@nestjs/common';
 import { Order } from './entities/order.entity';
 import { CreateOrderDto } from './dtos/create-order.dto';
 import { type } from 'os';
@@ -28,5 +28,10 @@ export class OrdersController {
   async createOrder(@Body() createData: CreateOrderDto, @Req() req: Request): Promise<Order> {
     const userId = req['userId'];
     return await this.ordersService.createOrder(userId, createData);
+  }
+
+  @Patch(':id')
+  async updateOrderStatus(@Param('id') orderId: number): Promise<Order> {
+    return await this.ordersService.updateOrderStatus(orderId);
   }
 }

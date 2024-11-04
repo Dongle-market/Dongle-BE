@@ -42,7 +42,7 @@ export class OrdersService {
     const order = new Order();
     order.userId = userId;
     order.receiverName = receiverName;
-    order.status = '주문완료';
+    order.status = '결제중';
     order.addr = addr;
     order.addrDetail = addrDetail;
     order.phoneNumber = phoneNumber;
@@ -65,6 +65,12 @@ export class OrdersService {
 
     // TODO: 리턴할 dto 고려하기
     return savedOrder;
+  }
+
+  async updateOrderStatus(orderId: number): Promise<Order> {
+    const order = await this.ordersRepository.findOne({ where: { orderId: orderId } });
+    order.status = '결제완료';
+    return await this.ordersRepository.save(order);
   }
 
 }
