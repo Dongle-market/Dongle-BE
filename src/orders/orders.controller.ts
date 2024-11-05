@@ -7,6 +7,7 @@ import { type } from 'os';
 import { CreateOrderPetDto } from './dtos/create-order-pet.dto';
 import { Public } from 'src/auth/public.decorator';
 import { OrderItem } from './entities/order-item.entity';
+import { OrderDto } from './dtos/order.dto';
 
 @Controller('apis/order')
 export class OrdersController {
@@ -18,7 +19,7 @@ export class OrdersController {
 
   /** 내 주문내역 */
   @Get('my')
-  async getByUserId(@Req() req: Request): Promise<Order[]> {
+  async getByUserId(@Req() req: Request): Promise<OrderDto[]> {
     const userId = req['userId'];
     this.logger.log(`userId ${userId}번 주문내역 조회`);
     return await this.ordersService.getByUserId(userId);

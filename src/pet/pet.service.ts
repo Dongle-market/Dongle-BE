@@ -22,10 +22,7 @@ export class PetService {
 
   /** 특정 유저의 반려동물 리스트 조회 */
   async getAllByUserId(userId: number): Promise<Pet[]> {
-    return await this.petsRepository.find({ 
-      where: { userId: userId }, 
-      relations: [ 'orderItems', 'orderItems.item' ] 
-    });
+    return await this.petsRepository.find({ where: { userId: userId } });
   }
 
   /** 특정 유저의 특정 반려동물 조회 */

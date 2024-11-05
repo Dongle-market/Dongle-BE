@@ -7,6 +7,7 @@ import { OrderItem } from './entities/order-item.entity';
 import { Item } from 'src/items/entities/item.entity';
 import { Pet } from 'src/pet/entities/pet.entity';
 import { CreateOrderPetDto } from './dtos/create-order-pet.dto';
+import { OrderDto } from './dtos/order.dto';
 
 @Injectable()
 export class OrdersService {
@@ -20,12 +21,14 @@ export class OrdersService {
   ) {}
 
   /** 내 주문내역 최신순 조회 */
-  async getByUserId(userId: number): Promise<Order[]> {
-    return await this.ordersRepository.find({ 
+  async getByUserId(userId: number): Promise<OrderDto[]> {
+    const orders = await this.ordersRepository.find({ 
       where: { userId: userId }, 
       order: { orderDate: 'DESC' },
-      relations: ['orderItems', 'orderItems.item']
+      relations: ['orderItems.item', 'orderItems.pets'],
     });
+
+    return orders.map(order => this.toOrderDto(order));
   }
 
   /** 단일 주문 조회 */
@@ -96,6 +99,31 @@ export class OrdersService {
 
     orderItem.pets.push(pet);
     return await this.orderItemsRepository.save(orderItem);
+  }
+
+  private toOrderDto(order: Order): OrderDto {
+    console.log(order);
+    const orderItems = order.orderItems.map(orderItem => ({
+      itemId: orderItem.item.itemId,
+      title: orderItem.item.title,
+      image: orderItem.item.image,
+      price: orderItem.item.lprice,
+      itemCount: orderItem.itemCount,
+      pets: orderItem.pets && orderItem.pets.map(pet => pet.petId)
+    }));
+
+    return {
+      orderId: order.orderId,
+      userId: order.userId,
+      orderDate: order.orderDate.toISOString(),
+      totalPrice: order.totalPrice,
+      status: order.status,
+      receiverName: order.receiverName,
+      addr: order.addr,
+      addrDetail: order.addrDetail,
+      phoneNumber: order.phoneNumber,
+      orderItems,
+    };
   }
 
 }
