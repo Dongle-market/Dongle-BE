@@ -24,7 +24,7 @@ export class PetController {
 
   /** 특정 반려동물 정보 + 주문내역 */
   @Get(':id')
-  async getOne(@Param('id') petId: number): Promise<{pet: Pet, orderItem: PetOrderItemDto[]}> {
+  async getOne(@Param('id') petId: number): Promise<{pet: Pet, orderItems: PetOrderItemDto[]}> {
     return this.petService.getPetOrderItems(petId);
   }
 

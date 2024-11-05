@@ -38,7 +38,7 @@ export class PetService {
   // }
 
   /** 특정 반려동물의 주문 아이템과 관련된 상품 정보 조회 */
-  async getPetOrderItems(petId: number): Promise<{pet: Pet, orderItem: PetOrderItemDto[]}> {
+  async getPetOrderItems(petId: number): Promise<{pet: Pet, orderItems: PetOrderItemDto[]}> {
     const pet = await this.petsRepository.findOne({ where: { petId } });
     if (!pet) {
       throw new NotFoundException(`Pet with ID ${petId} not found.`);
@@ -56,8 +56,8 @@ export class PetService {
         'o.order_date AS orderDate',
       ]);
 
-    const orderItem = await query.getRawMany();
-    return { pet, orderItem };
+    const orderItems = await query.getRawMany();
+    return { pet, orderItems };
   }
 
   /** 특정 유저의 반려동물 등록 */
