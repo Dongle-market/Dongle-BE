@@ -1,7 +1,8 @@
 // pet.entity.ts
 
-import { Column, Entity, PrimaryGeneratedColumn, ManyToOne, JoinColumn } from "typeorm";
+import { Column, Entity, PrimaryGeneratedColumn, ManyToOne, JoinColumn, ManyToMany, RelationId, JoinTable } from "typeorm";
 import { User } from "../../users/entities/user.entity";
+import { OrderItem } from "src/orders/entities/order-item.entity";
 
 @Entity({ name: 'pet' })
 export class Pet {
@@ -23,7 +24,14 @@ export class Pet {
   @Column({ name: 'age' })
   age: number;
 
-  @ManyToOne(() => User, user => user.pets)
+  @ManyToOne(() => User, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'user_id' }) // 외래 키 컬럼 이름을 명시적으로 지정
   user: User;
+
+  @RelationId((pet: Pet) => pet.user)
+  @Column({ name: 'user_id' }) 
+  userId: number;
+  
+  @ManyToMany(() => OrderItem, orderItem => orderItem.pets)
+  orderItems: OrderItem[];
 }

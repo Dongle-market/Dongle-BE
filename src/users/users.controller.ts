@@ -36,13 +36,15 @@ export class UsersController {
     return await this.usersService.create(userData);
   }
 
-  @Delete(":id")
-  remove(@Param("id") userId: number): Promise<void> {
+  @Delete()
+  remove(@Req() req: Request): Promise<void> {
+    const userId = req['userId'];
     return this.usersService.deleteOne(userId);
   }
 
-  @Patch(":id")
-  patch(@Param("id") userId: number, @Body() updateData: UpdateUserDto): Promise<User> {
+  @Patch()
+  patch(@Req() req: Request, @Body() updateData: UpdateUserDto): Promise<User> {
+    const userId = req['userId'];
     return this.usersService.update(userId, updateData)
   }
 

@@ -5,6 +5,9 @@ import { Order } from './entities/order.entity';
 import { In, Repository } from 'typeorm';
 import { OrderItem } from './entities/order-item.entity';
 import { Item } from 'src/items/entities/item.entity';
+import { Pet } from 'src/pet/entities/pet.entity';
+import { CreateOrderPetDto } from './dtos/create-order-pet.dto';
+import { OrderDto } from './dtos/order.dto';
 
 @Injectable()
 export class OrdersService {
@@ -13,16 +16,24 @@ export class OrdersService {
     private ordersRepository: Repository<Order>,
     @InjectRepository(OrderItem)
     private orderItemsRepository: Repository<OrderItem>,
+    @InjectRepository(Pet)
+    private petsRepository: Repository<Pet>,
   ) {}
 
   /** 내 주문내역 최신순 조회 */
-  async getByUserId(userId: number): Promise<Order[]> {
-    return await this.ordersRepository.find({ order: { orderDate: 'DESC' } });
+  async getByUserId(userId: number): Promise<OrderDto[]> {
+    const orders = await this.ordersRepository.find({ 
+      where: { userId: userId }, 
+      order: { orderDate: 'DESC' },
+      relations: ['orderItems.item', 'orderItems.pets'],
+    });
+
+    return orders.map(order => this.toOrderDto(order));
   }
 
   /** 단일 주문 조회 */
   async getOne(orderId: number): Promise<Order> {
-    return await this.ordersRepository.findOne({ where: { orderId: orderId } });
+    return await this.ordersRepository.findOne({ where: { orderId: orderId }, relations: ['orderItems', 'orderItems.item'] });
   }
 
   /** userId, 주문DTO로 주문 생성 */
@@ -71,6 +82,48 @@ export class OrdersService {
     const order = await this.ordersRepository.findOne({ where: { orderId: orderId } });
     order.status = '결제완료';
     return await this.ordersRepository.save(order);
+  }
+
+  /** 주문 - 펫 추가 */
+  async addPetToOrderItem(createData: CreateOrderPetDto): Promise<OrderItem> {
+    const { orderItemId, petId } = createData;
+
+    const orderItem = await this.orderItemsRepository.findOne({ where: { orderItemId }, relations: ['pets'] });
+    if (!orderItem) {
+      throw new Error(`Order with ID ${orderItemId} not found`);
+    }
+    const pet = await this.petsRepository.findOne({ where: { petId } });
+    if (!pet) {
+      throw new Error(`Pet with ID ${petId} not found`);
+    }
+
+    orderItem.pets.push(pet);
+    return await this.orderItemsRepository.save(orderItem);
+  }
+
+  private toOrderDto(order: Order): OrderDto {
+    console.log(order);
+    const orderItems = order.orderItems.map(orderItem => ({
+      itemId: orderItem.item.itemId,
+      title: orderItem.item.title,
+      image: orderItem.item.image,
+      price: orderItem.item.lprice,
+      itemCount: orderItem.itemCount,
+      pets: orderItem.pets && orderItem.pets.map(pet => pet.petId)
+    }));
+
+    return {
+      orderId: order.orderId,
+      userId: order.userId,
+      orderDate: order.orderDate.toISOString(),
+      totalPrice: order.totalPrice,
+      status: order.status,
+      receiverName: order.receiverName,
+      addr: order.addr,
+      addrDetail: order.addrDetail,
+      phoneNumber: order.phoneNumber,
+      orderItems,
+    };
   }
 
 }

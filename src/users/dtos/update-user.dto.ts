@@ -11,5 +11,7 @@ export class UpdateUserDto extends PartialType(CreateUserDto) {
   @IsString()
   readonly addrDetail: string;
 
-
+  @IsOptional()
+  @IsString()
+  readonly phoneNumber: string;
 } 

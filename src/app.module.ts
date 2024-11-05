@@ -28,6 +28,9 @@ import { OrdersModule } from './orders/orders.module';
       database: 'dongle_market',
       entities: [__dirname + '/**/*.entity{.ts,.js}'],
       synchronize: false,
+      extra: {
+        connectionLimit: 10,
+      }
     }),
     HttpModule,
     UsersModule,
