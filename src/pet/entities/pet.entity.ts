@@ -31,7 +31,7 @@ export class Pet {
   @RelationId((pet: Pet) => pet.user)
   @Column({ name: 'user_id' }) 
   userId: number;
-
+  
   @ManyToMany(() => OrderItem, orderItem => orderItem.pets)
   orderItems: OrderItem[];
 }
