@@ -49,7 +49,7 @@ export class AuthController {
       userData = newUser;
       this.logger.log(`userId ${userData.userId}번 회원가입`);
     }
-
+    
     return { token: jwtToken, user: userData };
   }
 }

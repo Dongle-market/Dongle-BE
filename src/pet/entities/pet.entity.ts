@@ -2,7 +2,7 @@
 
 import { Column, Entity, PrimaryGeneratedColumn, ManyToOne, JoinColumn, ManyToMany, RelationId, JoinTable } from "typeorm";
 import { User } from "../../users/entities/user.entity";
-import { Order } from "src/orders/entities/order.entity";
+import { OrderItem } from "src/orders/entities/order-item.entity";
 
 @Entity({ name: 'pet' })
 export class Pet {
@@ -32,11 +32,6 @@ export class Pet {
   @Column({ name: 'user_id' }) 
   userId: number;
 
-  @ManyToMany(() => Order, order => order.pets)
-  @JoinTable({
-    name: 'order_pet',
-    joinColumn: { name: 'pet_id', referencedColumnName: 'petId' },
-    inverseJoinColumn: { name: 'order_id', referencedColumnName: 'orderId' }
-  })
-  orders: Order[];
+  @ManyToMany(() => OrderItem, orderItem => orderItem.pets)
+  orderItems: OrderItem[];
 }

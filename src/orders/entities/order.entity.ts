@@ -40,11 +40,11 @@ export class Order {
   @Column({ name: 'phone_number' })
   phoneNumber: string;
 
-  @ManyToMany(() => Pet)
-  @JoinTable({
-    name: 'order_pet',
-    joinColumn: { name: 'order_id', referencedColumnName: 'orderId' },
-    inverseJoinColumn: { name: 'pet_id', referencedColumnName: 'petId' }
-  })
-  pets: Pet[];
+  // @ManyToMany(() => Pet)
+  // @JoinTable({
+  //   name: 'order_pet',
+  //   joinColumn: { name: 'order_id', referencedColumnName: 'orderId' },
+  //   inverseJoinColumn: { name: 'pet_id', referencedColumnName: 'petId' }
+  // })
+  // pets: Pet[];
 }

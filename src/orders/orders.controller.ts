@@ -6,6 +6,7 @@ import { CreateOrderDto } from './dtos/create-order.dto';
 import { type } from 'os';
 import { CreateOrderPetDto } from './dtos/create-order-pet.dto';
 import { Public } from 'src/auth/public.decorator';
+import { OrderItem } from './entities/order-item.entity';
 
 @Controller('apis/order')
 export class OrdersController {
@@ -44,9 +45,9 @@ export class OrdersController {
   }
 
   @Post('pet')
-  async addPetToOrder(@Body() createData: CreateOrderPetDto, @Req() req: Request): Promise<Order> {
+  async addPetToOrder(@Body() createData: CreateOrderPetDto, @Req() req: Request): Promise<OrderItem> {
     const userId = req['userId'];
-    this.logger.log(`${userId}번 유저가 ${createData.orderId}번 주문에 ${createData.petId}번 펫 추가`);
-    return await this.ordersService.addPetToOrder(createData);
+    this.logger.log(`${userId}번 유저가 ${createData.orderItemId}번 주문에 ${createData.petId}번 펫 추가`);
+    return await this.ordersService.addPetToOrderItem(createData);
   }
 }

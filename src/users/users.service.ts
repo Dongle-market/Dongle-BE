@@ -18,7 +18,7 @@ export class UsersService {
 
   /** userId로 해당하는 회원 검색 */
   async getOne(id: number): Promise<User> { // id가 number로 넘어오기 때문에 parseInt 필요없음
-    const user = await this.usersRepository.findOne({ where: { userId: id } });
+    const user = await this.usersRepository.findOne({ where: { userId: id }, relations: ['pets'] });
     if (!user) {
       throw new NotFoundException(`User with ID ${id} not found.`);
     }
@@ -28,7 +28,7 @@ export class UsersService {
 
   /** 카카오id로 기존유저 검증 */
   async getOneByKakaoId(kakaoId: string): Promise<User | undefined> {
-    const user = await this.usersRepository.findOne({ where: { kakaoId: kakaoId } });
+    const user = await this.usersRepository.findOne({ where: { kakaoId: kakaoId }, relations: ['pets'] });
     return user;
   }
 

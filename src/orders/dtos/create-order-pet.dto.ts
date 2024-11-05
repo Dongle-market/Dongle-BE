@@ -3,7 +3,7 @@ import { IsInt, IsNotEmpty } from "class-validator";
 export class CreateOrderPetDto {
   @IsNotEmpty()
   @IsInt()
-  readonly orderId: number;
+  readonly orderItemId: number;
 
   @IsNotEmpty()
   @IsInt()

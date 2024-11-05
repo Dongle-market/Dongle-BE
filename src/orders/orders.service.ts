@@ -21,12 +21,16 @@ export class OrdersService {
 
   /** 내 주문내역 최신순 조회 */
   async getByUserId(userId: number): Promise<Order[]> {
-    return await this.ordersRepository.find({ where: { userId: userId }, order: { orderDate: 'DESC' } });
+    return await this.ordersRepository.find({ 
+      where: { userId: userId }, 
+      order: { orderDate: 'DESC' },
+      relations: ['orderItems', 'orderItems.item']
+    });
   }
 
   /** 단일 주문 조회 */
   async getOne(orderId: number): Promise<Order> {
-    return await this.ordersRepository.findOne({ where: { orderId: orderId } });
+    return await this.ordersRepository.findOne({ where: { orderId: orderId }, relations: ['orderItems', 'orderItems.item'] });
   }
 
   /** userId, 주문DTO로 주문 생성 */
@@ -78,20 +82,20 @@ export class OrdersService {
   }
 
   /** 주문 - 펫 추가 */
-  async addPetToOrder(createData: CreateOrderPetDto): Promise<Order> {
-    const { orderId, petId } = createData;
+  async addPetToOrderItem(createData: CreateOrderPetDto): Promise<OrderItem> {
+    const { orderItemId, petId } = createData;
 
-    const order = await this.ordersRepository.findOne({ where: { orderId }, relations: ['pets'] });
-    if (!order) {
-      throw new Error(`Order with ID ${orderId} not found`);
+    const orderItem = await this.orderItemsRepository.findOne({ where: { orderItemId }, relations: ['pets'] });
+    if (!orderItem) {
+      throw new Error(`Order with ID ${orderItemId} not found`);
     }
     const pet = await this.petsRepository.findOne({ where: { petId } });
     if (!pet) {
       throw new Error(`Pet with ID ${petId} not found`);
     }
 
-    order.pets.push(pet);
-    return await this.ordersRepository.save(order);
+    orderItem.pets.push(pet);
+    return await this.orderItemsRepository.save(orderItem);
   }
 
 }
