@@ -1,3 +1,4 @@
+import { Cart } from "src/carts/entities/cart.entity";
 import { Pet } from "src/pets/entities/pet.entity";
 import { Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 
@@ -32,4 +33,7 @@ export class User {
 
   @OneToMany(() => Pet, pet => pet.user)
   pets: Pet[];
+
+  @OneToMany(() => Cart, cart => cart.user)
+  carts: Cart[];
 }
