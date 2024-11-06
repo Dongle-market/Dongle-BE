@@ -5,7 +5,7 @@ import { Order } from './entities/order.entity';
 import { In, Repository } from 'typeorm';
 import { OrderItem } from './entities/order-item.entity';
 import { Item } from 'src/items/entities/item.entity';
-import { Pet } from 'src/pet/entities/pet.entity';
+import { Pet } from 'src/pets/entities/pet.entity';
 import { CreateOrderPetDto } from './dtos/create-order-pet.dto';
 import { OrderDto } from './dtos/order.dto';
 
@@ -101,9 +101,14 @@ export class OrdersService {
     return await this.orderItemsRepository.save(orderItem);
   }
 
-  async deleteOrder(orderId: number): Promise<{message: string}> {
+  async deleteOrder(orderId: number): Promise<number> {
     const result = await this.ordersRepository.delete({ orderId });
-    return result.affected === 0 ? { message: '삭제할 주문이 없습니다.' } : { message: '주문이 삭제되었습니다.' };  
+    return result.affected;
+  }
+
+  async deleteOrderItem(orderItemId: number): Promise<number> {
+    const result = await this.orderItemsRepository.delete({ orderItemId });
+    return result.affected;
   }
 
   private toOrderDto(order: Order): OrderDto {

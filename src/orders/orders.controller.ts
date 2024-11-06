@@ -1,6 +1,6 @@
 import { Request } from 'express';
 import { OrdersService } from './orders.service';
-import { Body, Controller, Delete, Get, Logger, Param, Patch, Post, Req } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Logger, NotFoundException, Param, Patch, Post, Req } from '@nestjs/common';
 import { Order } from './entities/order.entity';
 import { CreateOrderDto } from './dtos/create-order.dto';
 import { type } from 'os';
@@ -56,6 +56,23 @@ export class OrdersController {
   async deleteOrder(@Param('id') orderId: number, @Req() req: Request): Promise<{message: string}> {
     const userId = req['userId'];
     this.logger.log(`${userId}번 유저가 ${orderId}번 주문 취소`);
-    return await this.ordersService.deleteOrder(orderId);
+    const affectedRows = await this.ordersService.deleteOrder(orderId);
+    if (affectedRows === 0) {
+      throw new NotFoundException('해당 주문이 존재하지 않습니다.');
+    } else {
+      return { message: '주문이 취소되었습니다.' }
+    }
+  }
+
+  @Delete('item/:id')
+  async deleteOrderItem(@Param('id') orderItemId: number, @Req() req: Request): Promise<{message: string}> {
+    const userId = req['userId'];
+    this.logger.log(`${userId}번 유저가 ${orderItemId}번 주문항목 삭제`);
+    const affectedRows = await this.ordersService.deleteOrderItem(orderItemId);
+    if (affectedRows === 0) {
+      throw new NotFoundException('해당 주문항목이 존재하지 않습니다.');
+    } else {
+      return { message: '주문항목이 삭제되었습니다.' }
+    }
   }
 }

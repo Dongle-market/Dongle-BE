@@ -8,10 +8,11 @@ import { AuthController } from './auth/auth.controller';
 import { AuthService } from './auth/auth.service';
 import { AuthModule } from './auth/auth.module';
 import { HttpModule } from '@nestjs/axios';
-import { PetModule } from './pet/pet.module';
+import { PetModule } from './pets/pet.module';
 import { OrdersController } from './orders/orders.controller';
 import { OrdersService } from './orders/orders.service';
 import { OrdersModule } from './orders/orders.module';
+import { CartsModule } from './carts/carts.module';
 
 @Module({
   imports: [
@@ -38,6 +39,7 @@ import { OrdersModule } from './orders/orders.module';
     AuthModule,
     PetModule,
     OrdersModule,
+    CartsModule,
   ],
   controllers: [AppController],
   // 컨트롤러 : express의 라우터와 같은 역할, url을 가져오고 함수를 실행
