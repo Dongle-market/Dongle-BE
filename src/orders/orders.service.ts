@@ -114,6 +114,7 @@ export class OrdersService {
   private toOrderDto(order: Order): OrderDto {
     console.log(order);
     const orderItems = order.orderItems.map(orderItem => ({
+      orderItemId: orderItem.orderItemId,
       itemId: orderItem.item.itemId,
       title: orderItem.item.title,
       image: orderItem.item.image,
