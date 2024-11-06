@@ -28,14 +28,14 @@ export class CartsService {
     return await this.cartsRepository.save(cart);
   }
 
-  async updateCart(userId: number, cartId: number, cartData: UpdateCartDto): Promise<Cart> {
+  async updateCart(userId: number, cartId: number, itemCount: number): Promise<Cart> {
     const cart = await this.cartsRepository.findOne({
       where: { cartId: cartId, user: { userId } }
     })
     if (!cart) {
       return null;
     }
-    cart.itemCount = cartData.itemCount;
+    cart.itemCount = itemCount;
     return await this.cartsRepository.save(cart);
   }
 
@@ -44,7 +44,7 @@ export class CartsService {
       where: { cartId: cartId, user: { userId } }
     })
     if (!cart) {
-      throw new Error(`${cartId}번 장바구니 항목이 존재하지 않습니다.`);
+      return 0;
     }
     const result = await this.cartsRepository.delete(cart);
     return result.affected;

@@ -56,6 +56,11 @@ export class OrdersController {
   async deleteOrder(@Param('id') orderId: number, @Req() req: Request): Promise<{message: string}> {
     const userId = req['userId'];
     this.logger.log(`${userId}번 유저가 ${orderId}번 주문 취소`);
-    return await this.ordersService.deleteOrder(orderId);
+    const affectedRows = await this.ordersService.deleteOrder(orderId);
+    if (affectedRows === 0) {
+      return { message: '해당 주문이 존재하지 않습니다.' }
+    } else {
+      return { message: '주문이 취소되었습니다.' }
+    }
   }
 }
