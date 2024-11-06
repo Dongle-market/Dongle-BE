@@ -1,6 +1,6 @@
 import { Request } from 'express';
 import { OrdersService } from './orders.service';
-import { Body, Controller, Get, Logger, Param, Patch, Post, Req } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Logger, Param, Patch, Post, Req } from '@nestjs/common';
 import { Order } from './entities/order.entity';
 import { CreateOrderDto } from './dtos/create-order.dto';
 import { type } from 'os';
@@ -50,5 +50,12 @@ export class OrdersController {
     const userId = req['userId'];
     this.logger.log(`${userId}번 유저가 ${createData.orderItemId}번 주문에 ${createData.petId}번 펫 추가`);
     return await this.ordersService.addPetToOrderItem(createData);
+  }
+
+  @Delete(':id')
+  async deleteOrder(@Param('id') orderId: number, @Req() req: Request): Promise<{message: string}> {
+    const userId = req['userId'];
+    this.logger.log(`${userId}번 유저가 ${orderId}번 주문 취소`);
+    return await this.ordersService.deleteOrder(orderId);
   }
 }
