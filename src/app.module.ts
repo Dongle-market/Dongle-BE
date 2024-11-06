@@ -31,6 +31,7 @@ import { CartsModule } from './carts/carts.module';
       synchronize: false,
       extra: {
         connectionLimit: 10,
+        maxIdle: 0,
       }
     }),
     HttpModule,
