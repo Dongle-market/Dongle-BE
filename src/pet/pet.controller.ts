@@ -1,6 +1,6 @@
 // pet.controller.ts
 
-import { Body, Controller, Delete, Get, Headers, Logger, Param, Post, Req } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Headers, Logger, Param, Patch, Post, Req } from '@nestjs/common';
 import { PetService } from './pet.service';
 import { Pet } from './entities/pet.entity';
 import { CreatePetDto } from './dto/create-pet.dto';
@@ -33,6 +33,13 @@ export class PetController {
   async create(@Req() req: Request, @Body() petData: CreatePetDto): Promise<Pet> {
     const userId = req['userId'];
     return await this.petService.create(userId, petData);
+  }
+
+  /** 특정 유저의 반려동물 수정 */
+  @Patch(':id')
+  async update(@Req() req: Request, @Param('id') petId: number, @Body() petData: UpdatePetDto): Promise<Pet> {
+    const userId = req['userId'];
+    return this.petService.updateOneByUserId(userId, petId, petData);
   }
 
   /** 특정 유저의 반려동물 삭제 */
