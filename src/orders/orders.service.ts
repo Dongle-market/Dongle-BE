@@ -101,6 +101,11 @@ export class OrdersService {
     return await this.orderItemsRepository.save(orderItem);
   }
 
+  async deleteOrder(orderId: number): Promise<{message: string}> {
+    const result = await this.ordersRepository.delete({ orderId });
+    return result.affected === 0 ? { message: '삭제할 주문이 없습니다.' } : { message: '주문이 삭제되었습니다.' };  
+  }
+
   private toOrderDto(order: Order): OrderDto {
     console.log(order);
     const orderItems = order.orderItems.map(orderItem => ({
