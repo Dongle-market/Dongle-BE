@@ -1,7 +1,7 @@
 import { Column, Entity, JoinColumn, JoinTable, ManyToMany, ManyToOne, PrimaryGeneratedColumn, RelationId } from "typeorm";
 import { Order } from "./order.entity";
 import { Item } from "src/items/entities/item.entity";
-import { Pet } from "src/pet/entities/pet.entity";
+import { Pet } from "src/pets/entities/pet.entity";
 
 @Entity({ name: 'order_item' })
 export class OrderItem {

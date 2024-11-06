@@ -5,7 +5,7 @@ import { Order } from './entities/order.entity';
 import { In, Repository } from 'typeorm';
 import { OrderItem } from './entities/order-item.entity';
 import { Item } from 'src/items/entities/item.entity';
-import { Pet } from 'src/pet/entities/pet.entity';
+import { Pet } from 'src/pets/entities/pet.entity';
 import { CreateOrderPetDto } from './dtos/create-order-pet.dto';
 import { OrderDto } from './dtos/order.dto';
 
