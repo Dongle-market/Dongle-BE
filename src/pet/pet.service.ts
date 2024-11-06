@@ -66,6 +66,23 @@ export class PetService {
     return await this.petsRepository.save(newPet);
   }
 
+  /** 특정 유저의 반려동물 수정 */
+  async updateOneByUserId(userId: number, petId: number, petData: UpdatePetDto): Promise<Pet> {
+
+    const existingPet = await this.petsRepository.findOne({
+      where: { petId, user: { userId } },
+    });
+    if (!existingPet) {
+      throw new NotFoundException(`Pet with ID ${petId} for User ${userId} not found.`);
+    }
+
+    // 반려동물 정보 업데이트
+    await this.petsRepository.update({ petId, user: { userId } }, petData);
+
+    // 수정된 반려동물 정보 반환
+    return this.petsRepository.findOne({ where: { petId, user: { userId } } });
+}
+
   /** 특정 유저의 반려동물 삭제 */
   async deleteOneByUserId(userId: number, petId: number): Promise<void> {
     const result = await this.petsRepository.delete({ petId, user: { userId } });
