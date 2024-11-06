@@ -106,6 +106,11 @@ export class OrdersService {
     return result.affected;
   }
 
+  async deleteOrderItem(orderItemId: number): Promise<number> {
+    const result = await this.orderItemsRepository.delete({ orderItemId });
+    return result.affected;
+  }
+
   private toOrderDto(order: Order): OrderDto {
     console.log(order);
     const orderItems = order.orderItems.map(orderItem => ({
