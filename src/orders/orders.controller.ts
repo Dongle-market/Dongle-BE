@@ -52,6 +52,12 @@ export class OrdersController {
     return await this.ordersService.addPetToOrderItem(createData);
   }
 
+  @Delete('pet/:orderItemId/:petId')
+  async deletePetToOrder(@Param("orderItemId") orderItemId: number, @Param("petId") petId: number, @Req() req: Request): Promise<OrderItem> {
+    const userId = req['userId'];
+    return await this.ordersService.deletePetToOrderItem(orderItemId, petId);
+  }
+
   @Delete(':id')
   async deleteOrder(@Param('id') orderId: number, @Req() req: Request): Promise<{message: string}> {
     const userId = req['userId'];

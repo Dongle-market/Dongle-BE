@@ -49,6 +49,7 @@ export class PetService {
       .innerJoin('oi.order', 'o')
       .innerJoin('oi.item', 'i')
       .select([
+        'oi.order_item_id AS orderItemId',
         'i.item_id AS itemId',
         'i.title AS title',
         'i.image AS image',

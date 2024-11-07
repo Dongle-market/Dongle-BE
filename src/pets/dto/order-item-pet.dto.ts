@@ -15,4 +15,7 @@ export class PetOrderItemDto {
 
   @IsDateString()
   orderDate: string;
+
+  @IsInt()
+  orderItemId: number;
 }

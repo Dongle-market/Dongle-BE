@@ -101,6 +101,20 @@ export class OrdersService {
     return await this.orderItemsRepository.save(orderItem);
   }
 
+  async deletePetToOrderItem(orderItemId: number, petId: number): Promise<OrderItem> {
+    const orderItem = await this.orderItemsRepository.findOne({ where: { orderItemId }, relations: ['pets'] });
+    if (!orderItem) {
+      throw new Error(`Order with ID ${orderItemId} not found`);
+    }
+    const pet = await this.petsRepository.findOne({ where: { petId } });
+    if (!pet) {
+      throw new Error(`Pet with ID ${petId} not found`);
+    }
+
+    orderItem.pets = orderItem.pets.filter(pet => pet.petId !== petId);
+    return await this.orderItemsRepository.save(orderItem);
+  }
+
   async deleteOrder(orderId: number): Promise<number> {
     const result = await this.ordersRepository.delete({ orderId });
     return result.affected;
