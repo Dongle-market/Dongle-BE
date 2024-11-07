@@ -3,6 +3,7 @@ import { UsersService } from './users.service';
 import { User } from './entities/user.entity';
 import { CreateUserDto } from './dtos/create-user.dto';
 import { UpdateUserDto } from './dtos/update-user.dto';
+import { UserResponseDto } from './dtos/user-response.dto';
 
 @Controller('apis/user')
 export class UsersController {
@@ -17,7 +18,7 @@ export class UsersController {
 
   /** 회원 정보 */
   @Get('my')
-  async getMyProfile(@Req() req: Request): Promise<User> {
+  async getMyProfile(@Req() req: Request): Promise<UserResponseDto> {
     const userId = req['userId'];
     const user = await this.usersService.getOne(userId);
     if (!user) {
@@ -27,7 +28,7 @@ export class UsersController {
   }
 
   @Get(":id") // 파라미터 받아오는걸 쿼리보다 뒤에쓰자
-  getOne(@Param("id") userId: number): Promise<User> { // 파라미터가 string으로 넘어와 Number로 변환해야 하는데, pipe의 transform: true가 해줌
+  getOne(@Param("id") userId: number): Promise<UserResponseDto> { // 파라미터가 string으로 넘어와 Number로 변환해야 하는데, pipe의 transform: true가 해줌
     return this.usersService.getOne(userId);
   }
 
@@ -43,7 +44,7 @@ export class UsersController {
   }
 
   @Patch()
-  patch(@Req() req: Request, @Body() updateData: UpdateUserDto): Promise<User> {
+  patch(@Req() req: Request, @Body() updateData: UpdateUserDto): Promise<UserResponseDto> {
     const userId = req['userId'];
     return this.usersService.update(userId, updateData)
   }

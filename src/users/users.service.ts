@@ -4,6 +4,7 @@ import { CreateUserDto } from './dtos/create-user.dto';
 import { UpdateUserDto } from './dtos/update-user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { UserResponseDto } from './dtos/user-response.dto';
 
 @Injectable() // dependency injection
 export class UsersService {
@@ -17,13 +18,26 @@ export class UsersService {
   }
 
   /** userId로 해당하는 회원 검색 */
-  async getOne(id: number): Promise<User> { // id가 number로 넘어오기 때문에 parseInt 필요없음
+  async getOne(id: number): Promise<UserResponseDto> { // id가 number로 넘어오기 때문에 parseInt 필요없음
     const user = await this.usersRepository.findOne({ where: { userId: id }, relations: ['pets', 'carts'] });
     if (!user) {
       throw new NotFoundException(`User with ID ${id} not found.`);
     }
-
-    return user;
+    const cartCount = user.carts.length;
+    const initialPetId = user.pets[0] ? user.pets[0].petId : null;
+    return {
+      userId: user.userId,
+      userName: user.userName,
+      kakaoId: user.kakaoId,
+      profilePic: user.profilePic,
+      addr: user.addr,
+      addrDetail: user.addrDetail,
+      phoneNumber: user.phoneNumber,
+      createdAt: user.createdAt.toISOString(),
+      updatedAt: user.updatedAt.toISOString(),
+      petId: initialPetId,
+      cartCount: cartCount,
+    }
   }
 
   /** 카카오id로 기존유저 검증 */
