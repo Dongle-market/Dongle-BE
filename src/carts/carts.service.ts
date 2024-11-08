@@ -1,7 +1,7 @@
 import { ConflictException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Cart } from './entities/cart.entity';
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 import { CreateCartDto } from './dtos/create-cart.dto';
 
 @Injectable()
@@ -62,6 +62,17 @@ export class CartsService {
     return await this.cartsRepository.save(cart);
   }
 
+  async deleteAllCarts(userId: number): Promise<number> {
+    const carts = await this.cartsRepository.find({
+      where: { user: { userId } }
+    })
+    if (carts.length === 0) {
+      return 0;
+    }
+    const result = await this.cartsRepository.delete(carts.map(cart => cart.cartId));
+    return result.affected;
+  }
+
   async deleteCart(userId: number, cartId: number): Promise<number> {
     const cart = await this.cartsRepository.findOne({
       where: { cartId: cartId, user: { userId } }
@@ -73,4 +84,10 @@ export class CartsService {
     return result.affected;
   }
 
+  async deleteCartsByItemIds(userId: number, itemIds: number[]): Promise<void> {
+    await this.cartsRepository.delete({
+      user: { userId },
+      item: In(itemIds),
+    })
+  }
 }

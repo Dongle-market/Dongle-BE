@@ -42,7 +42,7 @@ export class OrdersController {
   async updateOrderStatus(@Param('id') orderId: number, @Req() req: Request): Promise<Order> {
     const userId = req['userId'];
     this.logger.log(`userId ${userId}번 ${orderId}번 주문 결제 성공`);
-    return await this.ordersService.updateOrderStatus(orderId);
+    return await this.ordersService.updateOrderStatus(userId, orderId);
   }
 
   @Post('pet')

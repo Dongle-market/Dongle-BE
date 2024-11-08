@@ -39,6 +39,18 @@ export class CartsController {
     }
   }
 
+  @Delete()
+  async removeAllCarts(@Req() req: Request): Promise<{message: string, cartCount: number}> {
+    const userId = req['userId'];
+    const affectedRows = await this.cartsService.deleteAllCarts(userId);
+    if (affectedRows === 0) {
+      throw new NotFoundException('장바구니 항목이 존재하지 않습니다.');
+    } else {
+      const cartCount = await this.cartsService.getCartCount(userId);
+      return { message: '장바구니 항목이 모두 삭제되었습니다.', cartCount };
+    }
+  }
+
   @Delete(':id')
   async removeCart(@Req() req: Request, @Param('id') cartId: number): Promise<{message: string, cartCount: number}> {
     const userId = req['userId'];

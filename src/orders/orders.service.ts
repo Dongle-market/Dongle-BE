@@ -1,5 +1,5 @@
 import { CreateOrderDto } from './dtos/create-order.dto';
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Order } from './entities/order.entity';
 import { In, Repository } from 'typeorm';
@@ -8,6 +8,7 @@ import { Item } from 'src/items/entities/item.entity';
 import { Pet } from 'src/pets/entities/pet.entity';
 import { CreateOrderPetDto } from './dtos/create-order-pet.dto';
 import { OrderDto } from './dtos/order.dto';
+import { CartsService } from 'src/carts/carts.service';
 
 @Injectable()
 export class OrdersService {
@@ -18,6 +19,7 @@ export class OrdersService {
     private orderItemsRepository: Repository<OrderItem>,
     @InjectRepository(Pet)
     private petsRepository: Repository<Pet>,
+    private readonly cartsService: CartsService,
   ) {}
 
   /** 내 주문내역 최신순 조회 */
@@ -39,16 +41,7 @@ export class OrdersService {
   /** userId, 주문DTO로 주문 생성 */
   async createOrder(id: number, orderData: CreateOrderDto): Promise<Order> {
     const { userId, receiverName, addr, addrDetail, phoneNumber, totalPrice, orderItems } = { userId: id, ...orderData };
-
-    console.log({
-      userId,
-      receiverName,
-      addr,
-      addrDetail,
-      phoneNumber,
-      totalPrice,
-      orderItems,
-    })
+    
     // order 테이블에 주문정보 저장
     const order = new Order();
     order.userId = userId;
@@ -78,10 +71,19 @@ export class OrdersService {
     return savedOrder;
   }
 
-  async updateOrderStatus(orderId: number): Promise<Order> {
-    const order = await this.ordersRepository.findOne({ where: { orderId: orderId } });
+  async updateOrderStatus(userId: number, orderId: number): Promise<Order> {
+    const order = await this.ordersRepository.findOne({ where: { orderId: orderId }, relations: ['orderItems'] });
+    if (!order) {
+      throw new NotFoundException(`Order with ID ${orderId} not found`);
+    }
+    
     order.status = '결제완료';
-    return await this.ordersRepository.save(order);
+    const updatedOrder = await this.ordersRepository.save(order);
+    
+    const itemIds = order.orderItems.length > 0 && order.orderItems.map(orderItem => orderItem.itemId);
+    await this.cartsService.deleteCartsByItemIds(userId, itemIds);
+
+    return updatedOrder;
   }
 
   /** 주문 - 펫 추가 */
@@ -126,7 +128,6 @@ export class OrdersService {
   }
 
   private toOrderDto(order: Order): OrderDto {
-    console.log(order);
     const orderItems = order.orderItems.map(orderItem => ({
       orderItemId: orderItem.orderItemId,
       itemId: orderItem.item.itemId,
